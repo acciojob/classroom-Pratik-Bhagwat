@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-@Component
 public class StudentRepository {
-
     HashMap<String,Student>  studentHashMap = new HashMap<>();
     HashMap<String,Teacher> teacherHashMap = new HashMap<>();
     Map<String, LinkedHashSet<String>> studentTeacherMap = new HashMap<>();
@@ -28,23 +26,13 @@ public class StudentRepository {
         studentTeacherMap.put(teacher, students);
     }
     public Student getStudentByName(String name) {
-        for(Student s : studentHashMap.values()) {
-            if(s.getName().equals(name)) {
-                return s;
-            }
-        }
-        return null;
+        return studentHashMap.get(name);
     }
     public Teacher getTeacherByName (String name) {
-        for(Teacher t : teacherHashMap.values()){
-            if(t.getName().equals(name)) {
-                return t;
-            }
-        }
-        return null;
+        return teacherHashMap.get(name);
     }
-    public List<String> getStudentsByTeacherName(String teacherName) {
-        return new ArrayList<>(studentTeacherMap.get(teacherName));
+    public List<String> getStudentsByTeacherName(String teacher) {
+        return new ArrayList<>(studentTeacherMap.get(teacher));
     }
     public List<String> getAllStudents() {
         List<String> studentList = new ArrayList<>();
@@ -53,8 +41,8 @@ public class StudentRepository {
         }
         return studentList;
     }
-    public void deleteTeacherByName(String teacherName) {
-        teacherHashMap.remove(teacherName);
+    public void deleteTeacherByName(String teacher) {
+        teacherHashMap.remove(teacher);
     }
     public void deleteAllTeachers() {
         for(Set<String> ListOfStudents : studentTeacherMap.values()){

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @Service
-@Component
 public class StudentService {
     @Autowired
     StudentRepository studentRepository;
