@@ -1,59 +1,61 @@
 package com.driver;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
 @Repository
 public class StudentRepository {
-    HashMap<String,Student>  studentHashMap = new HashMap<>();
-    HashMap<String,Teacher> teacherHashMap = new HashMap<>();
-    Map<String, LinkedHashSet<String>> studentTeacherMap = new HashMap<>();
+    HashMap<String,Student> studentDb = new HashMap<>();
+    HashMap<String,Teacher> teacherDb = new HashMap<>();
+    HashMap<String , List<String>> student_teacherDb = new HashMap<>();
+
 
     public void addStudent(Student student){
         String key = student.getName();
-        studentHashMap.put(key,student);
+        studentDb.put(key,student);
     }
     public void addTeacher(Teacher teacher) {
         String key = teacher.getName();
-        teacherHashMap.put(key,teacher);
+        teacherDb.put(key,teacher);
     }
     public void addStudentTeacherPair(String student,String teacher) {
-        LinkedHashSet<String> students = studentTeacherMap.getOrDefault(teacher, new LinkedHashSet<>());
-        students.add(student);
-        studentTeacherMap.put(teacher, students);
+        if(student_teacherDb.containsKey(teacher)){
+            List<String> teacher_list = student_teacherDb.get(teacher);
+            teacher_list.add(student);
+            student_teacherDb.put(teacher,teacher_list);
+        }else{
+            List<String> teacher_list = new ArrayList<>();
+            teacher_list.add(student);
+            student_teacherDb.put(teacher,teacher_list);
+        }
     }
     public Student getStudentByName(String name) {
-        return studentHashMap.get(name);
+        return studentDb.get(name);
     }
     public Teacher getTeacherByName (String name) {
-        return teacherHashMap.get(name);
+        return teacherDb.get(name);
     }
     public List<String> getStudentsByTeacherName(String teacher) {
-        return new ArrayList<>(studentTeacherMap.get(teacher));
+        return new ArrayList<>(student_teacherDb.get(teacher));
     }
     public List<String> getAllStudents() {
         List<String> studentList = new ArrayList<>();
-        for (Student s : studentHashMap.values()) {
+        for (Student s : studentDb.values()) {
             studentList.add(s.getName());
         }
         return studentList;
     }
     public void deleteTeacherByName(String teacher) {
-        teacherHashMap.remove(teacher);
+        teacherDb.remove(teacher);
     }
     public void deleteAllTeachers() {
-        for(Set<String> ListOfStudents : studentTeacherMap.values()){
-            for(String student : ListOfStudents){
-
-                studentHashMap.remove(student);
-
+        for (List<String> student_list : student_teacherDb.values()) {
+            for (String s : student_list) {
+                studentDb.remove(s);
             }
+            teacherDb.clear();
+            student_teacherDb.clear();
         }
-
-        teacherHashMap.clear();
-        studentTeacherMap.clear();
     }
 }
